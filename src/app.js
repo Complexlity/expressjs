@@ -4,7 +4,7 @@ import morgan from "morgan";
 
 import { BarretenbergBackend } from "@noir-lang/backend_barretenberg";
 import { Noir } from "@noir-lang/noir_js";
-import noir_program from "./circuit/target/hello.json" assert { type: "json" };
+import noir_program from "../circuit/target/hello.json" assert { type: "json" };
 import * as middleware from "./utils/middleware.js";
 
 
