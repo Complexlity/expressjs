@@ -35,7 +35,7 @@ app.get("/proof", async (req, res) => {
 
   console.log("Getting proof data...");
   const proofData = await program.generateFinalProof(inputs);
-  const verifiedProof = await program.generateFinalProof(inputs);
+  const verifiedProof = await program.verifyFinalProof(proofData);
 
   console.log("done");
   console.log({ proofData });
