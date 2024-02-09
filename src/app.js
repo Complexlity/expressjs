@@ -1,13 +1,11 @@
-import express from "express";
 import cors from "cors";
+import express from "express";
 import morgan from "morgan";
 
-import * as middleware from "./utils/middleware.js";
-import helloRoute from "./routes/helloRouter.js";
 import { BarretenbergBackend } from "@noir-lang/backend_barretenberg";
 import { Noir } from "@noir-lang/noir_js";
 import noir_program from "./circuit/target/hello.json" assert { type: "json" };
-import express from "express";
+import * as middleware from "./utils/middleware.js";
 
 
 
