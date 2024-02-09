@@ -1,0 +1,8 @@
+
+        [package]
+        name="hello"
+        type="bin"
+        authors = ["Complexlity"]
+        compiler_version = "0.23.0"
+
+        [dependencies]
