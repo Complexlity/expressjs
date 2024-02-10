@@ -1,6 +1,6 @@
 
         [package]
-        name="hello"
+        name="sudoku"
         type="bin"
         authors = ["Complexlity"]
         compiler_version = "0.23.0"
