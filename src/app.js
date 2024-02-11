@@ -43,6 +43,7 @@ app.get("/", (req, res) => {
 });
 
 app.get("/proof", async (req, res) => {
+  // For testing the proof route
   const solution = [
     1, 2, 3, 4, 5, 6, 7, 8, 9, 4, 5, 6, 7, 8, 9, 1, 2, 3, 7, 8, 9, 1, 2, 3, 4,
     5, 6, 2, 1, 4, 3, 6, 5, 8, 9, 7, 3, 6, 5, 8, 9, 7, 2, 1, 4, 8, 9, 7, 2, 1,
@@ -56,7 +57,7 @@ app.get("/proof", async (req, res) => {
     /*
     //Proof could then be verified on chain by a smart contract verifier
     // const verifiedProof = await program.verifyFinalProof(proofData);
-    Removed because frames need not take more than 5 seconds
+    Removed because frames should take less than 5 seconds to return a request
     */
     return res.status(200).json({ proofData, verifiedProof: true });
   } catch (error) {
@@ -74,7 +75,7 @@ app.post("/proof", async (req, res) => {
     /*
     //Proof could then be verified on chain by a smart contract verifier
     // const verifiedProof = await program.verifyFinalProof(proofData);
-    Removed because frames responses need not take more than 5 seconds
+    Removed because frames responses should take less than 5 seconds
     */
 
     return res.status(200).json({ proofData, verifiedProof: true });
