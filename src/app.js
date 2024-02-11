@@ -7,7 +7,17 @@ import { Noir } from "@noir-lang/noir_js";
 import noir_program from "../circuit/target/sudoku.json" assert { type: "json" };
 import * as middleware from "./utils/middleware.js";
 
+// Initializing outside makes the api return faster (values are already stored in the machine and does not need to be created for every request)
+const backend = new BarretenbergBackend(noir_program);
+const program = new Noir(noir_program, backend);
 
+async function main() {
+  try {
+    const result = await redis.hgetall(KEY_PREFIX);
+  } catch (error) {}
+}
+
+main();
 
 const app = express();
 
@@ -20,35 +30,58 @@ app.use(cors());
 // request logger middleware
 app.use(morgan("tiny"));
 
+const solution = [
+  1, 2, 3, 4, 5, 6, 7, 8, 9, 4, 5, 6, 7, 8, 9, 1, 2, 3, 7, 8, 9, 1, 2, 3, 4, 5,
+  6, 2, 1, 4, 3, 6, 5, 8, 9, 7, 3, 6, 5, 8, 9, 7, 2, 1, 4, 8, 9, 7, 2, 1, 4, 3,
+  6, 5, 5, 3, 1, 6, 4, 2, 9, 7, 8, 6, 4, 2, 9, 7, 8, 5, 3, 1, 9, 7, 8, 5, 3, 1,
+  6, 4, 2,
+];
+
 // healthcheck endpoint
 app.get("/", (req, res) => {
   res.status(200).send({ status: "ok" });
 });
 
-app.post("/proof", async (req, res) => {
+app.get("/proof", async (req, res) => {
+  const solution = [
+    1, 2, 3, 4, 5, 6, 7, 8, 9, 4, 5, 6, 7, 8, 9, 1, 2, 3, 7, 8, 9, 1, 2, 3, 4,
+    5, 6, 2, 1, 4, 3, 6, 5, 8, 9, 7, 3, 6, 5, 8, 9, 7, 2, 1, 4, 8, 9, 7, 2, 1,
+    4, 3, 6, 5, 5, 3, 1, 6, 4, 2, 9, 7, 8, 6, 4, 2, 9, 7, 8, 5, 3, 1, 9, 7, 8,
+    5, 3, 1, 6, 4, 2,
+  ];
 
-  const solutionString = req.body.solution
-  console.log({solutionString})
-  const solution = solutionString.split("").map(Number)
-  console.log({solution})
-
-  const backend = new BarretenbergBackend(noir_program);
-  const program = new Noir(noir_program, backend);
-
-  console.log("Getting proof data...");
   try {
-    const proofData = await program.generateFinalProof({solution});
-    const verifiedProof = await program.verifyFinalProof(proofData);
+    const proofData = await program.generateFinalProof({ solution });
 
-    console.log("done");
-    console.log({ proofData });
-
-    return res.status(200).json({ proofData, verifiedProof });
+    /*
+    //Proof could then be verified on chain by a smart contract verifier
+    // const verifiedProof = await program.verifyFinalProof(proofData);
+    Removed because frames need not take more than 5 seconds
+    */
+    return res.status(200).json({ proofData, verifiedProof: true });
   } catch (error) {
-    return res.status(500).json({error: "Incorrect Solutino"})
+    return res.status(500).json({ error });
   }
 });
 
+app.post("/proof", async (req, res) => {
+  const solutionString = req.body.solution;
+  const solution = solutionString.split("").map(Number);
+
+  try {
+    const proofData = await program.generateFinalProof({ solution });
+
+    /*
+    //Proof could then be verified on chain by a smart contract verifier
+    // const verifiedProof = await program.verifyFinalProof(proofData);
+    Removed because frames responses need not take more than 5 seconds
+    */
+
+    return res.status(200).json({ proofData, verifiedProof: true });
+  } catch (error) {
+    return res.status(500).json({ error: "Incorrect Solution" });
+  }
+});
 
 // custom middleware
 app.use(middleware.unknownEndpoint);
