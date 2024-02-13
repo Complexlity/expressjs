@@ -11,14 +11,6 @@ import * as middleware from "./utils/middleware.js";
 const backend = new BarretenbergBackend(noir_program);
 const program = new Noir(noir_program, backend);
 
-async function main() {
-  try {
-    const result = await redis.hgetall(KEY_PREFIX);
-  } catch (error) {}
-}
-
-main();
-
 const app = express();
 
 // parse json request body
