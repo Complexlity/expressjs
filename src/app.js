@@ -69,6 +69,7 @@ app.post("/proof", async (req, res) => {
   }
 });
 
+
 // custom middleware
 app.use(middleware.unknownEndpoint);
 app.use(middleware.errorHandler);
